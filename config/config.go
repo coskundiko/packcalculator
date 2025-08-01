@@ -12,17 +12,8 @@ import (
 )
 
 type Config struct {
-	Host               string `envconfig:"HOST" default:"0.0.0.0"`
-	Port               string `envconfig:"SERVICE_PORT" default:"1455"`
-	GeminiAPIKey       string `envconfig:"GEMINI_API_KEY"`
-	GeminiApiModel     string `envconfig:"GEMINI_API_MODEL"`
-	GeminiApiPrompt    string `envconfig:"GEMINI_API_PROMPT"`
-	TemporalHostPort   string `envconfig:"TEMPORAL_HOST_PORT" default:":7233"`
-	TemporalNumWorkers int    `envconfig:"TEMPORAL_NUM_WORKERS" default:"1"`
-	TemporalTaskQueue  string `envconfig:"TEMPORAL_TASK_QUEUE"`
-	LaravelApiUrl      string `envconfig:"LARAVEL_API_URL"`
-	LaravelApiToken    string `envconfig:"LARAVEL_API_TOKEN"`
-	RunWorker          bool   `envconfig:"RUN_WORKER" default:"false"`
+	Host string `envconfig:"HOST" default:"0.0.0.0"`
+	Port string `envconfig:"SERVICE_PORT" default:"80"`
 }
 
 var (
