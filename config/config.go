@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/rs/zerolog"
@@ -24,20 +23,17 @@ var (
 
 func LoadConfig() *Config {
 	once.Do(func() {
+		Data = &Config{}
 		//log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC822})
 		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 		logLevel, _ := zerolog.ParseLevel("debug")
 		zerolog.SetGlobalLevel(logLevel)
 
-		var err error
-		err = godotenv.Load()
-		if err != nil {
-			fmt.Println(messages.ErrorloadingEnvFileMsg)
+		if err := godotenv.Load(); err != nil {
+			log.Debug().Err(err).Msg(messages.FailedProcessConfigMsg)
 		}
 
-		Data = &Config{}
-		err = envconfig.Process("", Data)
-		if err != nil {
+		if err := envconfig.Process("", Data); err != nil {
 			log.Fatal().Err(err).Msg(messages.FailedProcessConfigMsg)
 		}
 	})
