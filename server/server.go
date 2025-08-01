@@ -31,7 +31,7 @@ func New() *Server {
 	}
 }
 func (s *Server) StartServer() {
-	log.Info().Msg(messages.AfzaServiceStartingMsg)
+	log.Info().Msg(messages.EchoServiceStartingMsg)
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnixMicro
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	s.Echo.Debug = true
@@ -50,8 +50,7 @@ func (s *Server) StartServer() {
 	s.API()
 	go func() {
 		serverCnfg := &http.Server{
-			Addr: ":" + s.CFG.Port,
-			//Addr:    ":" + s.CFG.APP.Port,
+			Addr:    ":" + s.CFG.Port,
 			Handler: s.Echo,
 		}
 		err := serverCnfg.ListenAndServe()
