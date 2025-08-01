@@ -22,7 +22,6 @@ type Server struct {
 	CFG     *config.Config
 	Echo    *echo.Echo
 	Handler handler.Handler
-	Mutex   sync.RWMutex
 }
 
 func New() *Server {
