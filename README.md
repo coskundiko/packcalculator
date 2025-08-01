@@ -1,4 +1,4 @@
-# Pack Calculator (J Software Engineering Challenge)
+# Pack Calculator (Software Engineering Challenge)
 
 A Go-based REST API and simple web UI to solve the pack calculation challenge. The project is designed to calculate the optimal number of packs to ship for a given order size based on a defined set of rules.
 
@@ -90,7 +90,10 @@ The simplest way to get the application running.
 
 ```bash
 # Start the server
+docker compose up
+# Or
 docker-compose up
+
 ```
 
 The application will be available at `http://localhost:8180`.
@@ -111,6 +114,14 @@ To run the unit tests for the calculator package:
 ```bash
 go test ./pkg/calculator/... -v
 ```
+
+---
+
+## Live Demo
+
+The application is deployed and accessible at the following URL:
+
+[https://packcalculator-go.onrender.com/](https://packcalculator-go.onrender.com/)
 
 ---
 
