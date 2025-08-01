@@ -39,9 +39,7 @@ func (s *Server) StartServer() {
 	defer cancel()
 
 	// set up debug
-	//s.Echo.Debug = true
-	//s.Echo.HideBanner = false
-	//s.Echo.HidePort = false
+	s.Echo.Debug = s.CFG.Debug
 
 	// We set up the HTTP error handler; for now, we are keeping the default one.
 	s.Echo.HTTPErrorHandler = s.Echo.DefaultHTTPErrorHandler
@@ -66,6 +64,7 @@ func (s *Server) StartServer() {
 		//	fmt.Println(err)
 		//	cancel()
 		//}
+
 		// We use net/http to listen on the configured port and set Echo as the handler.
 		serverCnfg := &http.Server{
 			Addr:    ":" + s.CFG.Port,

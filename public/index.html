@@ -75,7 +75,7 @@
 
             const data = await response.json();
             if (!response.ok) {
-                responseEl.textContent = `Error: ${data.message}`;
+                responseEl.textContent = `Error: ${data}`;
                 return
             }
             responseEl.textContent = JSON.stringify(data);

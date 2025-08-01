@@ -25,7 +25,7 @@ func (h *OrderHandler) CalculatePacks(c echo.Context) error {
 	} else if req.OrderSize <= 0 {
 		return c.JSON(http.StatusBadRequest, "order_size must be a positive number")
 	} else if len(req.PackSizes) == 0 {
-		return c.JSON(http.StatusBadRequest, "order_size must be a positive number")
+		return c.JSON(http.StatusBadRequest, "pack_sizes must be a positive number")
 	}
 
 	packs := calculator.CalculatePacks(req.OrderSize, req.PackSizes)
