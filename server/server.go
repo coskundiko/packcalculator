@@ -14,7 +14,6 @@ import (
 	"packcalculator/app/handler"
 	"packcalculator/config"
 	"packcalculator/config/constants/messages"
-	"sync"
 	"syscall"
 )
 
