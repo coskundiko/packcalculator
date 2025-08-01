@@ -116,8 +116,7 @@ go test ./pkg/calculator/... -v
 
 ## Weaknesses & Potential Improvements
 
-- **In-Memory State**: The pack sizes are stored in memory and will reset if the server restarts. A persistence layer (like a simple file or a database) could be added to make the configuration permanent.
-- **Input Mutation**: The calculator currently sorts the `packSizes` slice in-place. While this is simple, in a larger application it would be safer to sort a copy to prevent unexpected side effects in other parts of the program.
+- **In-Memory State**: The pack sizes are stored in memory and will reset if the server restarts.
 - **Basic UI**: The user interface is minimal and designed only for basic interaction with the API.
 
 ---
