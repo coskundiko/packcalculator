@@ -7,7 +7,6 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"github.com/rs/zerolog/pkgerrors"
 	"net/http"
 	"os"
 	"os/signal"
@@ -23,7 +22,9 @@ type Server struct {
 	Handler handler.Handler
 }
 
+// New sets up the config, Echo, and handler
 func New() *Server {
+
 	return &Server{
 		CFG:     config.LoadConfig(),
 		Echo:    echo.New(),
@@ -32,30 +33,37 @@ func New() *Server {
 }
 func (s *Server) StartServer() {
 	log.Info().Msg(messages.EchoServiceStartingMsg)
+
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnixMicro
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+
 	s.Echo.Debug = true
-	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
-	zerolog.LevelFieldName = "lvl"
-	zerolog.TimestampFieldName = "time"
-	zerolog.MessageFieldName = "msg"
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	// We set up the HTTP error handler; for now, we are keeping the default one.
 	s.Echo.HTTPErrorHandler = s.Echo.DefaultHTTPErrorHandler
 	s.Echo.Use(
 		middleware.Recover(),
 		middleware.Gzip(),
 	)
+
+	// Loads routes
 	s.API()
+
+	// We start the HTTP server in a goroutine,allowing the main program to run and listen for exit signals.
 	go func() {
+		// We use net/http to listen on the configured port and set Echo as the handler.
 		serverCnfg := &http.Server{
 			Addr:    ":" + s.CFG.Port,
 			Handler: s.Echo,
 		}
+
+		// We start the listener
 		err := serverCnfg.ListenAndServe()
 		if err != nil {
-			log.Print(err)
+			fmt.Print(err)
 			cancel()
 		}
 		serverCnfg.SetKeepAlivesEnabled(true)
