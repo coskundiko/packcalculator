@@ -22,15 +22,17 @@ type Server struct {
 	Handler handler.Handler
 }
 
-// New sets up the config, Echo, and handler from app/handler where we list our handlers for the routes
+// New sets up the config, Echo, and
+// handler from app/handler where we list our handlers for the routes
 func New() *Server {
-
 	return &Server{
 		CFG:     config.LoadConfig(),
 		Echo:    echo.New(),
 		Handler: handler.New(),
 	}
 }
+
+// StartServer configures necessary settings and starts the server listener
 func (s *Server) StartServer() {
 	log.Info().Msg(messages.EchoServiceStartingMsg)
 
@@ -90,5 +92,5 @@ func (s *Server) StartServer() {
 	if err := s.Echo.Shutdown(ctx); err != nil {
 		fmt.Printf("Router.Shutdown: %v \n", err)
 	}
-	fmt.Println("Server Exited Properly")
+	fmt.Println(messages.ServerExitedMsg)
 }
