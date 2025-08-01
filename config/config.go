@@ -12,8 +12,9 @@ import (
 )
 
 type Config struct {
-	Host string `envconfig:"HOST" default:"0.0.0.0"`
-	Port string `envconfig:"SERVICE_PORT" default:"80"`
+	Debug bool   `envconfig:"SERVICE_DEBUG" default:"true"`
+	Host  string `envconfig:"SERVICE_HOST" default:"0.0.0.0"`
+	Port  string `envconfig:"SERVICE_PORT" default:"80"`
 }
 
 var (

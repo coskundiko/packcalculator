@@ -37,13 +37,20 @@ func (s *Server) StartServer() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnixMicro
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 
-	s.Echo.Debug = true
-
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	// set up debug
+	s.Echo.Debug = s.CFG.Debug
+
 	// We set up the HTTP error handler; for now, we are keeping the default one.
 	s.Echo.HTTPErrorHandler = s.Echo.DefaultHTTPErrorHandler
+
+	/*
+		We set up global middleware:
+		- Recover() handles panics to prevent the server from crashing
+		- Gzip() compresses response for better performance.
+	*/
 	s.Echo.Use(
 		middleware.Recover(),
 		middleware.Gzip(),
