@@ -22,7 +22,7 @@
         button {
             width: 100%;
             padding: 10px;
-            background: #007bff;
+            background: #16b41d;
             color: white;
             border: none;
             cursor: pointer;
@@ -33,44 +33,96 @@
             padding: 1em;
             white-space: pre-wrap;
         }
+
+        form {
+            padding-bottom: 1em;
+        }
     </style>
 </head>
 <body>
 <h1>Pack Calculator</h1>
+<form id="packForm">
+    <label for="packSizes">Pack Sizes (comma-separated, e.g. 23, 31, 53):</label>
+    <input type="text" id="packSizes" pattern="^[\d\s,]*\d[\d\s,]*$" placeholder="Enter" required>
+
+    <button type="submit">Submit pack sizes</button>
+</form>
 <form id="calcForm">
     <label for="orderAmount">Order Amount:</label>
-    <input type="number" id="orderAmount" placeholder="1" required>
-
-    <label for="packSizes">Pack Sizes (comma-separated):</label>
-    <input type="text" id="packSizes" placeholder="250, 500, 1000, 2000, 5000" required>
-
+    <input type="number" id="orderAmount" placeholder="Enter" required>
     <button type="submit">Calculate</button>
 </form>
 <h3>Result:</h3>
 <pre id="response">...</pre>
 
 <script>
-    document.getElementById('calcForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
+    const responseEl = document.getElementById('response');
 
-        const responseEl = document.getElementById('response');
-        responseEl.textContent = 'Loading...';
-
-        const orderAmount = parseInt(document.getElementById('orderAmount').value, 10);
-        const packSizesRaw = document.getElementById('packSizes').value;
-
-        const packSizes = packSizesRaw.split(',')
+    window.addEventListener('load', async function () {
+        const packSizesEl = document.getElementById('packSizes');
 
         try {
-            const response = await fetch('/api/calculate-packs', {
+            const response = await fetch(`/api/pack-sizes`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                responseEl.textContent = `Error: ${data}`;
+                return
+            }
+            packSizesEl.value = data.join(',');
+        } catch (err) {
+            responseEl.textContent = `Error: ${err.message}`;
+        }
+    });
+
+    document.getElementById('packForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        responseEl.textContent = 'Loading...';
+
+        const packSizesRaw = document.getElementById('packSizes').value;
+        const packSizes = packSizesRaw.split(',').map(s => parseInt(s.trim(), 10));
+
+        try {
+            const response = await fetch('/api/pack-sizes', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    order_size: orderAmount,
                     pack_sizes: packSizes
                 })
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                responseEl.textContent = `Error: ${data}`;
+                return
+            }
+            responseEl.textContent = `Pack sizes updated successfully.`;
+        } catch (err) {
+            responseEl.textContent = `Error: ${err.message}`;
+        }
+    });
+
+    document.getElementById('calcForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        responseEl.textContent = 'Loading...';
+
+        const orderAmount = parseInt(document.getElementById('orderAmount').value, 10);
+
+        try {
+            const response = await fetch(`/api/calculate-packs?order_size=${orderAmount}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
             });
 
             const data = await response.json();
