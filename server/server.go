@@ -16,6 +16,7 @@ import (
 	"os/signal"
 	"packcalculator/config"
 	"packcalculator/config/constants/messages"
+	"packcalculator/handler"
 	"strconv"
 	"sync"
 	"syscall"
@@ -25,6 +26,7 @@ import (
 type Server struct {
 	CFG          *config.Config
 	Echo         *echo.Echo
+	Handler      handler.Handler
 	Uptime       time.Time      `json:"uptime"`
 	RequestCount uint64         `json:"request_count"`
 	Status       map[string]int `json:"status"`
@@ -33,10 +35,11 @@ type Server struct {
 
 func New() *Server {
 	return &Server{
-		CFG:    config.LoadConfig(),
-		Echo:   echo.New(),
-		Uptime: time.Now(),
-		Status: map[string]int{},
+		CFG:     config.LoadConfig(),
+		Echo:    echo.New(),
+		Handler: handler.New(),
+		Uptime:  time.Now(),
+		Status:  map[string]int{},
 	}
 }
 func (s *Server) StartServer() {
@@ -64,7 +67,7 @@ func (s *Server) StartServer() {
 	s.API()
 	go func() {
 		serverCnfg := &http.Server{
-			Addr: ":8080",
+			Addr: ":1234",
 			//Addr:    ":" + s.CFG.APP.Port,
 			Handler: s.Echo,
 		}
