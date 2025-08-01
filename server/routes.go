@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// We add and load the routes
 func (x *Server) API() {
 	x.Echo.Static("/store", "store").Name = "static_store"
 	x.Echo.GET("/", func(c echo.Context) error {

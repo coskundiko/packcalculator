@@ -22,7 +22,7 @@ type Server struct {
 	Handler handler.Handler
 }
 
-// New sets up the config, Echo, and handler
+// New sets up the config, Echo, and handler from app/handler where we list our handlers for the routes
 func New() *Server {
 
 	return &Server{
