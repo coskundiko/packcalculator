@@ -11,9 +11,9 @@ import (
 )
 
 type Config struct {
-	Debug bool   `envconfig:"SERVICE_DEBUG" default:"true"`
+	Debug bool   `envconfig:"SERVICE_DEBUG" default:"false"`
 	Host  string `envconfig:"SERVICE_HOST" default:"0.0.0.0"`
-	Port  string `envconfig:"SERVICE_PORT" default:"80"`
+	Port  string `envconfig:"SERVICE_PORT" default:"8080"`
 }
 
 var (
@@ -24,15 +24,13 @@ var (
 func LoadConfig() *Config {
 	once.Do(func() {
 		Data = &Config{}
-		//log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC822})
+
+		zerolog.TimeFieldFormat = zerolog.TimeFormatUnixMicro
 		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 		logLevel, _ := zerolog.ParseLevel("debug")
 		zerolog.SetGlobalLevel(logLevel)
 
-		if err := godotenv.Load(); err != nil {
-			log.Debug().Err(err).Msg(messages.FailedProcessConfigMsg)
-		}
-
+		_ = godotenv.Load()
 		if err := envconfig.Process("", Data); err != nil {
 			log.Fatal().Err(err).Msg(messages.FailedProcessConfigMsg)
 		}
