@@ -43,6 +43,7 @@ func LoadConfig() *Config {
 			fmt.Println(messages.ErrorloadingEnvFileMsg)
 		}
 
+		Data = &Config{}
 		err = envconfig.Process("", Data)
 		if err != nil {
 			log.Fatal().Err(err).Msg(messages.FailedProcessConfigMsg)
