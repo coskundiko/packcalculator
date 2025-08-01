@@ -3,6 +3,7 @@ package order
 import (
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"packcalculator/pkg/calculator"
 	"sync"
 )
 
@@ -25,33 +26,18 @@ func New() OrderHandler {
 	}
 }
 
-func (h *OrderHandler) CalculatePacks(c echo.Context) error {
-	req := CalculatePacksRequest{}
-	if err := c.Bind(req); err != nil {
-		return c.JSON(http.StatusBadRequest, "Invalid request body")
-	}
-
-	if req.OrderSize <= 0 {
-		return c.JSON(http.StatusBadRequest, "order_size must be a positive number")
-	}
-
-	//packs := calculator.CalculatePacks(req.OrderSize, req.PackSizes)
-
-	return c.JSON(http.StatusOK, h.PackSizes)
-}
-
 func (h *OrderHandler) GetPackSizes(c echo.Context) error {
 	return c.JSON(http.StatusOK, h.PackSizes)
 }
 
 func (h *OrderHandler) SetPackSizes(c echo.Context) error {
-	req := new(SetPackSizesRequest)
-	if err := c.Bind(req); err != nil {
+	req := SetPackSizesRequest{}
+	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, "Invalid request body")
 	}
 
 	if len(req.PackSizes) == 0 {
-		return c.JSON(http.StatusBadRequest, "pack_sizes must be a positive number")
+		return c.JSON(http.StatusBadRequest, "pack_sizes must be an array")
 	}
 
 	h.Mutex.Lock()
@@ -59,4 +45,19 @@ func (h *OrderHandler) SetPackSizes(c echo.Context) error {
 	h.Mutex.Unlock()
 
 	return c.JSON(http.StatusOK, h.PackSizes)
+}
+
+func (h *OrderHandler) CalculatePacks(c echo.Context) error {
+	req := CalculatePacksRequest{}
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid request body")
+	}
+
+	if req.OrderSize <= 0 {
+		return c.JSON(http.StatusBadRequest, "order_size must be a positive number")
+	}
+
+	packs := calculator.CalculatePacks(req.OrderSize, h.PackSizes)
+
+	return c.JSON(http.StatusOK, packs)
 }

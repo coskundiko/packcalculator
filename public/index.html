@@ -118,11 +118,14 @@
         const orderAmount = parseInt(document.getElementById('orderAmount').value, 10);
 
         try {
-            const response = await fetch(`/api/calculate-packs?order_size=${orderAmount}`, {
-                method: 'GET',
+            const response = await fetch(`/api/calculate-packs`, {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                body: JSON.stringify({
+                    order_size: orderAmount
+                })
             });
 
             const data = await response.json();
